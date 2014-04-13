@@ -9,8 +9,13 @@
 
 #include <jrl/mal/matrixabstractlayer.hh>
 
-
 #include <Mathematics/Polynome.hh>
+
+struct Point
+{
+    double x;
+    double y;
+}
 
 namespace PatternGeneratorJRL
 {
@@ -21,9 +26,28 @@ namespace PatternGeneratorJRL
 
     public:
 
-      /*! Constructor */
-      Bspline(int order,);
+        /*! Constructor */
+        Bsplines();
 
-      /*! Destructor */
-      ~Bspline();
-    }
+        /*! Destructor */
+        ~Bspline();
+
+        /*!Set Parameters */
+        SetBsplinesParameters(int order,std::vector<Point> control_points, std::vector<double> knot_vector) ;
+
+
+        int GetOrder() const;
+
+        std::vector<double> GetControlPoint() const;
+
+        std::vector<double> GetKnotVector() const;
+    private:
+
+        int m_order;
+
+        std::vector<Point> m_control_points;
+
+        std::vector<double> m_knot_vector;
+    };
+
+}
