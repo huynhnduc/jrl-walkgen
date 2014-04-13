@@ -42,6 +42,7 @@ void Bsplines::ComputeBasisFunction(double t)
         int n = m_knot_vector.size() - 1 -j -1;
         m_basis_function[j] = new double[n];
     }
+    /*Calculate the basis function*/
     for(j=0;j <= m_order;j++)
     {
         int n = m_knot_vector.size() - 1 -j -1;
