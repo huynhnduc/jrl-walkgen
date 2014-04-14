@@ -20,7 +20,7 @@ struct Point
 namespace PatternGeneratorJRL
 {
 
-  /** Class for computing trajectories */
+  /** Bspline class */
   class  Bspline
     {
 
@@ -32,16 +32,25 @@ namespace PatternGeneratorJRL
         /*! Destructor */
         ~Bspline();
 
-        /*!Set Parameters */
-        SetBsplinesParameters(int order,std::vector<Point> control_points, std::vector<double> knot_vector) ;
+        /*!Set Parameters of Basis Function*/
+        void SetBasisFunctionParameters(int order,
+                              std::vector<double> knot_vector) ;
 
+        double **ComputeBasisFunction(int t);
+
+        void Bsplines::SetOrder(int order);
+
+        void Bsplines::SetControlPoints(std::vector<Point> control_points) ;
+
+        void Bsplines::SetKnotVector(std::vector<double> knot_vector);
 
         int GetOrder() const;
 
-        std::vector<double> GetControlPoint() const;
+        std::vector<Point> GetControlPoints() const;
 
         std::vector<double> GetKnotVector() const;
-    private:
+
+    protected:
 
         int m_order;
 
