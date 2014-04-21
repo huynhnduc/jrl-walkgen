@@ -1,9 +1,9 @@
 /*
- * Copyright 2006, 2007, 2008, 2009, 2010, 
+ * Copyright 2006, 2007, 2008, 2009, 2010,
  *
  * Andrei     Herdt
  * Florent    Lamiraux
- * Mathieu    Poirier 
+ * Mathieu    Poirier
  * Olivier    Stasse
  *
  * JRL, CNRS/AIST
@@ -21,7 +21,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with walkGenJrl.  If not, see <http://www.gnu.org/licenses/>.
  *
- *  Research carried out within the scope of the 
+ *  Research carried out within the scope of the
  *  Joint Japanese-French Robotics Laboratory (JRL)
  */
 /** \file PolynomeFoot.h
@@ -40,9 +40,22 @@
 #include <vector>
 
 #include <Mathematics/Polynome.hh>
+#include <Mathematics/BSpline.hh>
 
 namespace PatternGeneratorJRL
 {
+
+  class PolynomeZBspline : public Bspline
+  {
+      public:
+
+      PolynomeZBspline(int degree, double FT, double FP, double ToMP, double MP);
+
+      void Generate_Control_Points();
+
+      private:
+      double m_FT,m_FP, m_ToMP, m_MP;
+  }
 
   /// Polynome used for X,Y and Theta trajectories.
   class  Polynome3 : public Polynome
@@ -53,7 +66,7 @@ namespace PatternGeneratorJRL
        FP: Final position */
       Polynome3(double FT, double FP);
 
-      /*!  Set the parameters 
+      /*!  Set the parameters
 	This method assumes implicitly a position
 	set to zero, and a speed equals to zero.
 	Final velocity is 0
@@ -76,7 +89,7 @@ namespace PatternGeneratorJRL
 					     double &InitSpeed);
       /// Destructor.
       ~Polynome3();
-      
+
     private:
       /*! Store final time and final position. */
       double m_FT, m_FP;
@@ -90,7 +103,7 @@ namespace PatternGeneratorJRL
        FT: Final time
        MP: Middle position */
       Polynome4(double FT, double MP);
-  
+
       /// Set the parameters
       // Initial velocity and position are 0
       // Final velocity and position are 0
@@ -115,11 +128,11 @@ namespace PatternGeneratorJRL
 
       /// Destructor.
       ~Polynome4();
-      
+
     private:
       /*! Store final time and middle position. */
       double m_FT, m_MP;
-      
+
     };
 
   /// Polynome used for X,Y and Theta trajectories.
@@ -169,7 +182,7 @@ namespace PatternGeneratorJRL
       /// FT: Final time
       /// MP: Middle position
       Polynome6(double FT, double MP);
-  
+
       /// Set the parameters
       // Initial acceleration, velocity and position by default 0
       // Final acceleration, velocity and position are 0

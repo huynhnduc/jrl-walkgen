@@ -1,62 +1,79 @@
-/** \file StepOverPolynome.h
-    \brief Polynomes object for generating foot and hip trajectories while stepping over. */
+
+/** \file Bsplines.h
+    \brief Bsplines object for generating trajectoire from set of Points given. */
 
 
 #ifndef _BSPLINES_H_
 #define _BSPLINES_H_
 
 #include <vector>
-
+#include <iostream>
+#include <math.h>
 #include <jrl/mal/matrixabstractlayer.hh>
 
-#include <Mathematics/Polynome.hh>
-
-struct double
+struct Point
 {
     double x;
     double y;
-}
+};
 
-namespace PatternGeneratorJRL
-{
+//namespace PatternGeneratorJRL
+//{
 
   /** Bspline class */
-  class  Bspline
+  class  Bsplines
     {
 
     public:
-
         /*! Constructor */
-        Bsplines();
+        Bsplines(int degree, std::vector<Point> control_points);
 
         /*! Destructor */
-        ~Bspline();
+        ~Bsplines();
 
-        /*!Set Parameters of Basis Function*/
-        void SetBasisFunctionParameters(int order,
-                              std::vector<double> knot_vector) ;
+        /*! Create a Knot Vector from m_degree and m_control_points with an algo "method" */
+        void GenerateKnotVector(std::string method);
 
-        double **ComputeBasisFunction(int t);
+        /*! Create a derivative Bsplines*/
+        Bsplines DerivativeBsplines();
 
-        void Bsplines::SetOrder(int order);
+        /*!Compute Basic Function */
+        double *ComputeBasisFunction(double t);
 
-        void Bsplines::SetControlPoints(std::vector<double> control_doubles) ;
+        /*!Compute Bsplines */
+        Point ComputeBplines(double t);
 
-        void Bsplines::SetKnotVector(std::vector<double> knot_vector);
+        /*! Set Degree */
+        void SetDegree(int &degree);
 
-        int GetOrder() const;
+        /*! Set Control Points */
+        void SetControlPoints(std::vector<Point> &control_points) ;
 
-        std::vector<double> GetControldoubles() const;
+        /*! Set Knot Vector */
+        void SetKnotVector(std::vector<double> &knot_vector) ;
 
+        /*! Get Degree */
+        int GetDegree() const;
+
+        /*! Get Control Points */
+        std::vector<Point> GetControlPoints() const;
+
+        /*! Get Knot Vector*/
         std::vector<double> GetKnotVector() const;
+
+        void PrintKnotVector() const;
+
+        void PrintControlPoints() const;
+
+        void PrintDegree() const;
 
     protected:
 
-        int m_order;
+        int m_degree;
 
-        std::vector<double> m_control_doubles;
+        std::vector<Point> m_control_points;
 
         std::vector<double> m_knot_vector;
     };
-
-}
+#endif /* _BSPLINES_H_*/
+//}
