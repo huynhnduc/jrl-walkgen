@@ -72,14 +72,14 @@ void Bsplines::GenerateKnotVector(std::string method)
 
             if (m_control_points.size()-1>=m_degree)
             {
-                for (i=1;i<=m_control_points.size()-1-m_degree;i++)
+                for (j=1;j<=m_control_points.size()-1-m_degree;j++)
                 {
-                    j=0;
+                    i=j;
                     U=0.0;
-                    while (j<m_degree)
+                    while (i<=m_degree-1+j)
                     {
                         U +=set_of_pam[i];
-                        j++;
+                        i++;
                     }
                     m_knot_vector.push_back((U/m_degree));
                 }
