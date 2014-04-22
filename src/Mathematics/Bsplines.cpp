@@ -125,14 +125,17 @@ double *Bsplines::ComputeBasisFunction(double t)
     m_basis_function = new double* [m_degree+1];
     int i,j;
 
-    for (j=0; j<m_degree+1; j++)
-        {
-            int n = m_knot_vector.size() - 1 -j -1;
-            m_basis_function[j] = new double[n+1];
-        }
+    if (m_degree!= m_knot_vector.size() - m_control_points.size() -1 )
+    {
+        cout << "The parameters are not compatibles. Please recheck " << endl;
+        return C;
+    }
+    
+    
         for(j=0;j <= m_degree;j++)
         {
             int n = m_knot_vector.size() - 1 -j -1;
+            m_basis_function[j] = new double[n+1];
             cout << "order  " ; cout << j << endl;
             cout << "n control point  " ; cout << n << endl;
 
@@ -172,6 +175,12 @@ Point Bsplines::ComputeBplines(double t)
     double *m_basis_function = ComputeBasisFunction(t);
 
     Point C = {0.0,0.0};
+    if (m_degree!= m_knot_vector.size() - m_control_points.size() -1 )
+    {
+        cout << "The parameters are not compatibles. Please recheck " << endl;
+        return C;
+    }
+    
     if (m_degree == ((m_knot_vector.size()-1) - (m_control_points.size()-1)- 1) )
         {
             for (int i=0;i<m_control_points.size();i++)
