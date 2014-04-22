@@ -1,4 +1,3 @@
-
 /** \file Bsplines.h
     \brief Bsplines object for generating trajectoire from set of Points given. */
 
@@ -17,8 +16,8 @@ struct Point
     double y;
 };
 
-//namespace PatternGeneratorJRL
-//{
+namespace PatternGeneratorJRL
+{
 
   /** Bspline class */
   class  Bsplines
@@ -76,4 +75,4 @@ struct Point
         std::vector<double> m_knot_vector;
     };
 #endif /* _BSPLINES_H_*/
-//}
+}
