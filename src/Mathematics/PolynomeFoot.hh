@@ -45,17 +45,31 @@
 namespace PatternGeneratorJRL
 {
 
-  class PolynomeZBspline : public Bspline
+  class PolynomeZBsplines : public Bsplines
   {
       public:
+      /** Constructor:
+       FT: Final time
+       FP: Final position
+       ToMP : Time of Max Position
+       MP : Max Position **/
+      PolynomeZBsplines(int degree, double FT, double FP, double ToMP, double MP);
+      /** Detructor **/
+      ~PolynomeZBsplines();
 
-      PolynomeZBspline(int degree, double FT, double FP, double ToMP, double MP);
-
-      void Generate_Control_Points();
+      /** Create a vector of Control Points with 7 Points :
+      {0.0,0.0},
+      {m_FT*0.1,0.0},
+      {0.5*m_ToMP,0.5*m_MP},
+      {m_ToMP,m_MP},
+      {0.85*m_FT,m_FP},
+      {0.9*m_FT,m_FP},
+      {m_FT,m_FP}**/
+      std::vector<Point> GenerateControlPoints(double FT, double FP, double ToMP, double MP);
 
       private:
-      double m_FT,m_FP, m_ToMP, m_MP;
-  }
+      double m_FT, m_FP, m_ToMP, m_MP;
+  };
 
   /// Polynome used for X,Y and Theta trajectories.
   class  Polynome3 : public Polynome
