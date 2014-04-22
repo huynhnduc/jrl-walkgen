@@ -34,39 +34,54 @@
 using namespace::std;
 using namespace::PatternGeneratorJRL;
 
-PolynomeZBspline::PolynomeZBspline(int degree, double FT, double FP, double ToMP, double MP)
+PolynomeZBsplines::PolynomeZBsplines(int degree, double FT, double FP, double ToMP, double MP):Bsplines(degree, GenerateControlPoints(FT, FP, ToMP, MP))
+{
+    m_degree = degree;
+    cout << degree << endl;
+}
+
+PolynomeZBsplines::~PolynomeZBsplines()
 {
 
 }
-
-void PolynomeZBspline::Generate_Control_Points()
+std::vector<Point> PolynomeZBsplines::GenerateControlPoints(double FT, double FP, double ToMP, double MP)
 {
-    m_control_point.clear();
-    //m_control_point.reserve(7);
+    m_FT = FT;
+    m_FP = FP;
+    m_ToMP = ToMP;
+    m_MP = MP;
+    std::vector<Point> control_points;
+    control_points.clear();
 
     Point A = {0.0,0.0};
-    m_control_point.push_back(A);
+    control_points.push_back(A);
 
     A = {m_FT*0.1,0.0};
-    m_control_point.push_back(A);
+    control_points.push_back(A);
 
-    A = {0.75*m_ToMP,0.75*m_MP};
-    m_control_point.push_back(A);
+
+    A = {0.5*m_ToMP,0.5*m_MP};
+    control_points.push_back(A);
+
 
     A = {m_ToMP,m_MP};
-    m_control_point.push_back(A);
+    control_points.push_back(A);
+
 
     A = {0.85*m_FT,m_FP};
-    m_control_point.push_back(A);
+    control_points.push_back(A);
+
 
     A = {0.9*m_FT,m_FP};
-    m_control_point.push_back(A);
+    control_points.push_back(A);
 
-    A = {FT,FP};
-    m_control_point.push_back(A);
+
+    A = {m_FT,m_FP};
+    control_points.push_back(A);
+
+
+return control_points;
 }
-
-
 
 
 Polynome3::Polynome3(double FT, double FP) :Polynome(3)
