@@ -8,7 +8,7 @@
 #include <vector>
 #include <iostream>
 #include <math.h>
-#include <jrl/mal/matrixabstractlayer.hh>
+
 
 struct Point
 {
@@ -74,5 +74,6 @@ namespace PatternGeneratorJRL
 
         std::vector<double> m_knot_vector;
     };
-#endif /* _BSPLINES_H_*/
+
 }
+#endif /* _BSPLINES_H_*/
