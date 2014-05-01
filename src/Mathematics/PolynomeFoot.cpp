@@ -44,9 +44,42 @@ ZBsplines::~ZBsplines()
 
 }
 
-double ZBsplines::ZComputeBsplines(double t)
+double ZBsplines::ZComputePosition(double t)
 {
-    return ComputeBsplines(t).y;
+    if (t<m_FT)
+        return ComputeBsplines(t).y;
+    else
+        return ComputeBsplines(m_FT - t).y;
+}
+
+double ZBsplines::ZComputeVelocity(double t)
+{
+    if (m_degree >=1){
+        if (t<m_FT)
+            return DerivativeBsplines().ComputeBsplines(t).y;
+        else
+            return DerivativeBsplines().ComputeBsplines(m_FT - t).y;
+    }
+    else
+    {
+        cout << "ERROR" << endl;
+        return 0;
+    }
+}
+
+double ZBsplines::ZComputeAcc(double t)
+{
+    if (m_degree >=2){
+        if (t<m_FT)
+            return DerivativeBsplines().DerivativeBsplines().ComputeBsplines(t).y;
+        else
+            return DerivativeBsplines().DerivativeBsplines().ComputeBsplines(m_FT - t).y;
+    }
+    else
+    {
+        cout << "ERROR" << endl;
+        return 0;
+    }
 }
 
 void ZBsplines::ZGenerateKnotVector(double FT, double FP, double ToMP, double MP)
@@ -61,7 +94,6 @@ void ZBsplines::ZGenerateKnotVector(double FT, double FP, double ToMP, double MP
     knot.push_back(0.85*ToMP);
     knot.push_back(1.15*ToMP);
     knot.push_back(1.25*ToMP);
-    //knot.push_back(0.45*FT);
     for (int i =3;i<=m_degree;i++)
     {
         knot.push_back(0.99999*FT);
