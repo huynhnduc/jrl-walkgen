@@ -23,7 +23,7 @@
  *  Joint Japanese-French Robotics Laboratory (JRL)
  */
 /*! \file TestBsplines.cpp
-  \brief This Example shows you how to use Bsplines to create a curve passing a vector of points . */
+  \brief This Example shows you how to use Bsplines to create a Z trajectory  . */
 
 #include <iostream>
 #include <fstream>
@@ -33,7 +33,7 @@ using namespace std;
 
 int main()
 {
-double t=0.0;
+    double t=0.0;
     int m_degree;
     int i , j;
     ofstream myfile;
@@ -44,7 +44,7 @@ double t=0.0;
     double m_MP = 0.3;
     double m_ToMP = m_FT/3.0;
 
-    ZBsplines Z(m_FT, m_FP, m_ToMP, m_MP);
+    PatternGeneratorJRL::ZBsplines Z(m_FT, m_FP, m_ToMP, m_MP);
 
     Z.PrintDegree();
     Z.PrintKnotVector();
@@ -52,8 +52,8 @@ double t=0.0;
 
     for (int k=1; k<1000;k++)
     {
-       
-        t=double(k)*Z.GetKnotVector().back()/1000.0;
+
+        t = double(k)*Z.GetKnotVector().back()/1000.0;
         cout << k << endl;
         myfile << t << " " << Z.ZComputePosition(t)<<" "<< Z.ZComputeVelocity(t)<< " "<< Z.ZComputeAcc(t)<< endl;
         cout <<  t  << " " << Z.ZComputePosition(t)<<" "<< Z.ZComputeVelocity(t)<< " "<< Z.ZComputeAcc(t)<< endl;
