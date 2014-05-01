@@ -33,13 +33,11 @@ using namespace std;
 
 int main()
 {
-    double t=0.0;
+double t=0.0;
     int m_degree;
     int i , j;
-    double m;
     ofstream myfile;
     myfile.open("test.txt");
-    vector<Point> m_control_points;
 
     double m_FT = 0.7;
     double m_FP = 0.2;
@@ -52,16 +50,14 @@ int main()
     Z.PrintKnotVector();
     Z.PrintControlPoints();
 
-    Bsplines dZ = Z.DerivativeBsplines();
-    Bsplines ddZ = dZ.DerivativeBsplines();
     for (int k=1; k<1000;k++)
     {
+       
         t=double(k)*Z.GetKnotVector().back()/1000.0;
         cout << k << endl;
-        myfile << t << " " << Z.ComputeBsplines(t).x << " "<<Z.ComputeBsplines(t).y <<" "<< dZ.ComputeBsplines(t).x << " "<< dZ.ComputeBsplines(t).y <<" "<< ddZ.ComputeBsplines(t).x << " "<< ddZ.ComputeBsplines(t).y<< endl;
-        cout << " t " << t << " " << Z.ComputeBsplines(t).x << " "<<Z.ComputeBsplines(t).y <<" "<< dZ.ComputeBsplines(t).x << " "<< dZ.ComputeBsplines(t).y <<" "<< ddZ.ComputeBsplines(t).x << " "<< ddZ.ComputeBsplines(t).y<< endl;
+        myfile << t << " " << Z.ZComputePosition(t)<<" "<< Z.ZComputeVelocity(t)<< " "<< Z.ZComputeAcc(t)<< endl;
+        cout <<  t  << " " << Z.ZComputePosition(t)<<" "<< Z.ZComputeVelocity(t)<< " "<< Z.ZComputeAcc(t)<< endl;
     }
     myfile.close();
-
     return 0;
 }
