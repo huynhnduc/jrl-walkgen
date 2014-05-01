@@ -2,7 +2,7 @@
  * Copyright 2009, 2010, 2014
  *
  * 
- * Olivier  Stasse
+ * Olivier  Stasse, Huynh Ngoc Duc
  *
  * JRL, CNRS/AIST
  *
@@ -23,7 +23,7 @@
  *  Joint Japanese-French Robotics Laboratory (JRL)
  */
 /*! \file TestBsplines.cpp
-  \brief This Example shows you how to use Bsplines to create a Z trajectory  . */
+  \brief This Example shows you how to use Bsplines to create a foot trajectory on Z . */
 
 #include <iostream>
 #include <fstream>
