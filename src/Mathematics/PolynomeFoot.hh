@@ -45,7 +45,7 @@
 namespace PatternGeneratorJRL
 {
 
-/// Bsplines used for Z trajectoire of stair steps
+  /// Bsplines used for Z trajectoire of stair steps
   class ZBsplines : public Bsplines
   {
       public:
@@ -56,10 +56,16 @@ namespace PatternGeneratorJRL
        MP : Max Position */
       ZBsplines(double FT, double FP, double ToMP, double MP);
 
-      /*!Compute at time t */
-      double ZComputeBsplines(double t);
+        void ZGenerateKnotVector(double FT, double FP, double ToMP, double MP);
 
-      void ZGenerateKnotVector(double FT, double FP, double ToMP, double MP);
+      /*!Compute Position at time t */
+      double ZComputePosition(double t);
+
+        /*!Compute Velocity at time t */
+      double ZComputeVelocity(double t);
+
+        /*!Compute Acceleration at time t */
+      double ZComputeAcc(double t);
 
       /** Detructor **/
       ~ZBsplines();
@@ -78,6 +84,7 @@ namespace PatternGeneratorJRL
       private:
       double m_FT, m_FP, m_ToMP, m_MP;
   };
+
 
 
   /// Polynome used for X,Y and Theta trajectories.
