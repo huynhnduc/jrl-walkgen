@@ -19,7 +19,7 @@ struct Point
 namespace PatternGeneratorJRL
 {
 
-  /** Bspline class */
+/** Bspline class */
   class  Bsplines
     {
 
@@ -29,6 +29,9 @@ namespace PatternGeneratorJRL
 
         /*! Destructor */
         ~Bsplines();
+
+        /*! Caculate Degree of Bsplines from m_control_points and m_knot_vector*/
+        void GenerateDegree();
 
         /*! Create a Knot Vector from m_degree and m_control_points with an algo "method" */
         void GenerateKnotVector(std::string method);
@@ -40,16 +43,16 @@ namespace PatternGeneratorJRL
         double *ComputeBasisFunction(double t);
 
         /*!Compute Bsplines */
-        Point ComputeBplines(double t);
+        Point ComputeBsplines(double t);
 
         /*! Set Degree */
-        void SetDegree(int &degree);
+        void SetDegree(int degree);
 
         /*! Set Control Points */
-        void SetControlPoints(std::vector<Point> &control_points) ;
+        void SetControlPoints(std::vector<Point> control_points) ;
 
         /*! Set Knot Vector */
-        void SetKnotVector(std::vector<double> &knot_vector) ;
+        void SetKnotVector(std::vector<double> knot_vector) ;
 
         /*! Get Degree */
         int GetDegree() const;
@@ -74,6 +77,5 @@ namespace PatternGeneratorJRL
 
         std::vector<double> m_knot_vector;
     };
-
 }
 #endif /* _BSPLINES_H_*/
