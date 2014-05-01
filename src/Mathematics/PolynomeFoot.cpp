@@ -34,17 +34,44 @@
 using namespace::std;
 using namespace::PatternGeneratorJRL;
 
-PolynomeZBsplines::PolynomeZBsplines(int degree, double FT, double FP, double ToMP, double MP):Bsplines(degree, GenerateControlPoints(FT, FP, ToMP, MP))
+ZBsplines::ZBsplines(double FT, double FP, double ToMP, double MP):Bsplines(4, GenerateControlPoints(FT, FP, ToMP, MP))
 {
-    m_degree = degree;
-    cout << degree << endl;
+    ZGenerateKnotVector(FT, FP, ToMP, MP);
 }
 
-PolynomeZBsplines::~PolynomeZBsplines()
+ZBsplines::~ZBsplines()
 {
 
 }
-std::vector<Point> PolynomeZBsplines::GenerateControlPoints(double FT, double FP, double ToMP, double MP)
+
+double ZBsplines::ZComputeBsplines(double t)
+{
+    return ComputeBsplines(t).y;
+}
+
+void ZBsplines::ZGenerateKnotVector(double FT, double FP, double ToMP, double MP)
+{
+    std::vector<double> knot;
+    knot.clear();
+    knot.push_back(0.0);
+    knot.push_back(0.0);
+    knot.push_back(0.0);
+    knot.push_back(0.0);
+    knot.push_back(m_FT*0.05);
+    knot.push_back(0.85*ToMP);
+    knot.push_back(1.15*ToMP);
+    knot.push_back(1.25*ToMP);
+    //knot.push_back(0.45*FT);
+    for (int i =3;i<=m_degree;i++)
+    {
+        knot.push_back(0.99999*FT);
+    }
+    knot.push_back(FT);
+    knot.push_back(FT);
+    knot.push_back(FT);
+    SetKnotVector(knot);
+}
+std::vector<Point> ZBsplines::GenerateControlPoints(double FT, double FP, double ToMP, double MP)
 {
     m_FT = FT;
     m_FP = FP;
@@ -52,37 +79,44 @@ std::vector<Point> PolynomeZBsplines::GenerateControlPoints(double FT, double FP
     m_MP = MP;
     std::vector<Point> control_points;
     control_points.clear();
+    std::ofstream myfile1;
+    myfile1.open("control_point.txt");
 
     Point A = {0.0,0.0};
     control_points.push_back(A);
+    myfile1 << A.x <<" "<< A.y<< endl;
+
+    A = {m_FT*0.05,0.0};
+    control_points.push_back(A);
+    myfile1 << A.x <<" "<< A.y<< endl;
 
     A = {m_FT*0.1,0.0};
     control_points.push_back(A);
+    myfile1 << A.x <<" "<< A.y<< endl;
 
-
-    A = {0.5*m_ToMP,0.5*m_MP};
+    A = {0.85*m_ToMP,m_MP};
     control_points.push_back(A);
+    myfile1 << A.x <<" "<< A.y<< endl;
 
-
-    A = {m_ToMP,m_MP};
+    A = {1.15*m_ToMP,m_MP};
     control_points.push_back(A);
-
+    myfile1 << A.x <<" "<< A.y<< endl;
 
     A = {0.85*m_FT,m_FP};
     control_points.push_back(A);
-
+    myfile1 << A.x <<" "<< A.y<< endl;
 
     A = {0.9*m_FT,m_FP};
     control_points.push_back(A);
-
+    myfile1 << A.x <<" "<< A.y<< endl;
 
     A = {m_FT,m_FP};
     control_points.push_back(A);
+    myfile1 << A.x <<" "<< A.y<< endl;
 
-
+    myfile1.close();
 return control_points;
 }
-
 
 Polynome3::Polynome3(double FT, double FP) :Polynome(3)
 {
