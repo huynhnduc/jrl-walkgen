@@ -25,7 +25,7 @@ namespace PatternGeneratorJRL
 
     public:
         /*! Constructor */
-        Bsplines(int degree, std::vector<Point> control_points);
+        Bsplines(int degree);
 
         /*! Destructor */
         ~Bsplines();
@@ -49,10 +49,10 @@ namespace PatternGeneratorJRL
         void SetDegree(int degree);
 
         /*! Set Control Points */
-        void SetControlPoints(std::vector<Point> control_points) ;
+        void SetControlPoints(std::vector<Point> &control_points) ;
 
         /*! Set Knot Vector */
-        void SetKnotVector(std::vector<double> knot_vector) ;
+        void SetKnotVector(std::vector<double> &knot_vector) ;
 
         /*! Get Degree */
         int GetDegree() const;
