@@ -34,9 +34,9 @@
 using namespace::std;
 using namespace::PatternGeneratorJRL;
 
-ZBsplines::ZBsplines(double FT, double FP, double ToMP, double MP):Bsplines(4, GenerateControlPoints(FT, FP, ToMP, MP))
+ZBsplines::ZBsplines(double FT, double FP, double ToMP, double MP):Bsplines(4)
 {
-    ZGenerateKnotVector(FT, FP, ToMP, MP);
+    SetParameters(FT, FP, ToMP, MP);
 }
 
 ZBsplines::~ZBsplines()
@@ -82,28 +82,34 @@ double ZBsplines::ZComputeAcc(double t)
     }
 }
 
-void ZBsplines::ZGenerateKnotVector(double FT, double FP, double ToMP, double MP)
+void  ZBsplines::SetParameters(double FT, double FP, double ToMP, double MP)
+{
+    ZGenerateKnotVector(FT,ToMP);
+    ZGenerateControlPoints(FT, FP, ToMP, MP);
+}
+
+void ZBsplines::ZGenerateKnotVector(double FT, double ToMP)
 {
     std::vector<double> knot;
     knot.clear();
-    knot.push_back(0.0);
-    knot.push_back(0.0);
-    knot.push_back(0.0);
-    knot.push_back(0.0);
-    knot.push_back(m_FT*0.05);
-    knot.push_back(0.85*ToMP);
-    knot.push_back(1.15*ToMP);
-    knot.push_back(1.25*ToMP);
-    for (int i =3;i<=m_degree;i++)
+    for (int i=0;i<=m_degree;i++)
     {
-        knot.push_back(0.99999*FT);
+        knot.push_back(0.0);
     }
-    knot.push_back(FT);
-    knot.push_back(FT);
-    knot.push_back(FT);
+
+    knot.push_back(0.6*ToMP);
+    knot.push_back(ToMP);
+    knot.push_back(1.3*ToMP);
+
+    for (int i =0;i<=m_degree;i++)
+    {
+        knot.push_back(FT);
+    }
+
     SetKnotVector(knot);
 }
-std::vector<Point> ZBsplines::GenerateControlPoints(double FT, double FP, double ToMP, double MP)
+
+void ZBsplines::ZGenerateControlPoints(double FT, double FP, double ToMP, double MP)
 {
     m_FT = FT;
     m_FP = FP;
@@ -147,7 +153,8 @@ std::vector<Point> ZBsplines::GenerateControlPoints(double FT, double FP, double
     myfile1 << A.x <<" "<< A.y<< endl;
 
     myfile1.close();
-return control_points;
+
+    SetControlPoints(control_points);
 }
 
 Polynome3::Polynome3(double FT, double FP) :Polynome(3)
