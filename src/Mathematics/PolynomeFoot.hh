@@ -45,7 +45,7 @@
 namespace PatternGeneratorJRL
 {
 
-  /// Bsplines used for Z trajectoire of stair steps
+  /// Bsplines used for Z trajectory of stair steps
   class ZBsplines : public Bsplines
   {
       public:
@@ -55,8 +55,6 @@ namespace PatternGeneratorJRL
        ToMP : Time of Max Position
        MP : Max Position */
       ZBsplines(double FT, double FP, double ToMP, double MP);
-
-        void ZGenerateKnotVector(double FT, double FP, double ToMP, double MP);
 
       /*!Compute Position at time t */
       double ZComputePosition(double t);
@@ -70,21 +68,30 @@ namespace PatternGeneratorJRL
       /** Detructor **/
       ~ZBsplines();
 
+      /*!  Set the parameters
+	  This method assumes implicitly a initial position
+	  initial speed and initial acceleration equal to zero.
+	  The same for final speed and final acceleration.
+	  Speed at Max Position is around zero.
+       */
+      void SetParameters(double FT, double FP, double ToMP, double MP);
+
       /*! Create a vector of Control Points with 8 Points :
       {0.0,0.0},
-      {m_FT*0.1,0.0},
-      {0.5*m_ToMP,0.5*m_MP},
+      {m_FT*0.05,0.0},
+      {m_FT*0.1,0.0}},
       {0.85*m_ToMP,m_MP},
       {1.15*m_ToMP,m_MP},
       {0.85*m_FT,m_FP},
       {0.9*m_FT,m_FP},
       {m_FT,m_FP}*/
-      std::vector<Point> GenerateControlPoints(double FT, double FP, double ToMP, double MP);
+      void ZGenerateControlPoints(double FT, double FP, double ToMP, double MP);
+
+      void ZGenerateKnotVector(double FT, double ToMP);
 
       private:
       double m_FT, m_FP, m_ToMP, m_MP;
   };
-
 
 
   /// Polynome used for X,Y and Theta trajectories.
