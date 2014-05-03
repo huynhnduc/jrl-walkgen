@@ -9,13 +9,11 @@ using namespace::std;
 using namespace::PatternGeneratorJRL;
 
 
-Bsplines::Bsplines(int degree, std::vector<Point> control_points)
+Bsplines::Bsplines(int degree)
 {
     m_degree = degree;
     m_control_points.clear();
-    m_control_points = control_points;
     m_knot_vector.clear();
-    GenerateKnotVector("centripetal");
 }
 
 Bsplines::~Bsplines()
@@ -219,7 +217,8 @@ Bsplines Bsplines::DerivativeBsplines()
             T.y = ((m_control_points[i+1].y - m_control_points[i].y)*double(m_degree) )/ (m_knot_vector[i+m_degree+1] - m_knot_vector[i+1]);
             Q.push_back(T);
         }
-        Bsplines B(m_degree-1,Q);
+        Bsplines B(m_degree-1);
+        B.SetControlPoints(Q);
         std::vector<double> new_knot_vector(m_knot_vector.begin()+1,m_knot_vector.end()-1);
         B.SetKnotVector(new_knot_vector);
         //cout <<"derivative function "<<endl;
@@ -231,7 +230,7 @@ Bsplines Bsplines::DerivativeBsplines()
     else
         {
             std::cout << "the function cannot be derivative " << std::endl;
-            return Bsplines(m_degree,m_control_points);
+            return Bsplines(m_degree);
         }
 }
 
@@ -240,7 +239,7 @@ void Bsplines::SetDegree(int degree)
     m_degree = degree;
 }
 
-void Bsplines::SetControlPoints(std::vector<Point> control_points)
+void Bsplines::SetControlPoints(std::vector<Point> &control_points)
 {
     if (control_points.size()>=2)
     {
@@ -252,7 +251,7 @@ void Bsplines::SetControlPoints(std::vector<Point> control_points)
     }
 }
 
-void Bsplines::SetKnotVector(std::vector<double> knot_vector)
+void Bsplines::SetKnotVector(std::vector<double> &knot_vector)
 {
     m_knot_vector = knot_vector;
 }
