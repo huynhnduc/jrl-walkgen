@@ -53,9 +53,9 @@ int main()
     for (int k=1; k<1000;k++)
     {
 
-        t = double(k)*Z.GetKnotVector().back()/1000.0;
+        t=double(k)*Z.GetKnotVector().back()/1000.0;
         cout << k << endl;
-        myfile << t << " " << Z.ZComputePosition(t)<<" "<< Z.ZComputeVelocity(t)<< " "<< Z.ZComputeAcc(t)<< endl;
+        myfile << t << " " << Z.ZComputePosition(t)<<" "<< Z.ComputeBsplines(t).x <<" "<< Z.ComputeBsplines(t).y <<" "<< Z.ZComputeVelocity(t)<< " "<< Z.ZComputeAcc(t)<< endl;
         cout <<  t  << " " << Z.ZComputePosition(t)<<" "<< Z.ZComputeVelocity(t)<< " "<< Z.ZComputeAcc(t)<< endl;
     }
     myfile.close();
