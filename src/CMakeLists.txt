@@ -35,6 +35,7 @@ SET(SOURCES
   GlobalStrategyManagers/GlobalStrategyManager.cpp
   GlobalStrategyManagers/DoubleStagePreviewControlStrategy.cpp
   Mathematics/AnalyticalZMPCOGTrajectory.cpp
+  Mathematics/Bsplines.cpp
   Mathematics/ConvexHull.cpp
   Mathematics/FootConstraintsAsLinearSystem.cpp
 #  Mathematics/FootConstraintsAsLinearSystemForVelRef.cpp
