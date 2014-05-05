@@ -294,3 +294,132 @@ void Bsplines::PrintDegree() const
 {
     std::cout << "Degree: " << m_degree << std::endl;
 }
+
+
+// Class ZBplines heritage of class Bsplines
+// create a foot trajectory of Z on function the time t
+
+
+ZBsplines::ZBsplines(double FT, double FP, double ToMP, double MP):Bsplines(4)
+{
+    SetParameters(FT, FP, ToMP, MP);
+}
+
+ZBsplines::~ZBsplines()
+{
+
+}
+
+double ZBsplines::ZComputePosition(double t)
+{
+    if (t<m_FT)
+        return ComputeBsplines(t).y;
+    else
+        return ComputeBsplines(m_FT - t).y;
+}
+
+double ZBsplines::ZComputeVelocity(double t)
+{
+    if (m_degree >=1){
+        if (t<m_FT)
+            return DerivativeBsplines().ComputeBsplines(t).y;
+        else
+            return DerivativeBsplines().ComputeBsplines(m_FT - t).y;
+    }
+    else
+    {
+        cout << "ERROR" << endl;
+        return 0;
+    }
+}
+
+double ZBsplines::ZComputeAcc(double t)
+{
+    if (m_degree >=2){
+        if (t<m_FT)
+            return DerivativeBsplines().DerivativeBsplines().ComputeBsplines(t).y;
+        else
+            return DerivativeBsplines().DerivativeBsplines().ComputeBsplines(m_FT - t).y;
+    }
+    else
+    {
+        cout << "ERROR" << endl;
+        return 0;
+    }
+}
+
+void  ZBsplines::SetParameters(double FT, double FP, double ToMP, double MP)
+{
+    ZGenerateKnotVector(FT,ToMP);
+    ZGenerateControlPoints(FT, FP, ToMP, MP);
+}
+
+void ZBsplines::ZGenerateKnotVector(double FT, double ToMP)
+{
+    std::vector<double> knot;
+    knot.clear();
+    for (int i=0;i<=m_degree;i++)
+    {
+        knot.push_back(0.0);
+    }
+
+    knot.push_back(0.6*ToMP);
+    knot.push_back(ToMP);
+    knot.push_back(1.3*ToMP);
+
+    for (int i =0;i<=m_degree;i++)
+    {
+        knot.push_back(FT);
+    }
+
+    SetKnotVector(knot);
+}
+
+void ZBsplines::ZGenerateControlPoints(double FT, double FP, double ToMP, double MP)
+{
+    m_FT = FT;
+    m_FP = FP;
+    m_ToMP = ToMP;
+    m_MP = MP;
+    std::vector<Point> control_points;
+    control_points.clear();
+    std::ofstream myfile1;
+    myfile1.open("control_point.txt");
+
+    Point A = {0.0,0.0};
+    control_points.push_back(A);
+    myfile1 << A.x <<" "<< A.y<< endl;
+
+    A = {m_FT*0.05,0.0};
+    control_points.push_back(A);
+    myfile1 << A.x <<" "<< A.y<< endl;
+
+    A = {m_FT*0.1,0.0};
+    control_points.push_back(A);
+    myfile1 << A.x <<" "<< A.y<< endl;
+
+    A = {0.85*m_ToMP,m_MP};
+    control_points.push_back(A);
+    myfile1 << A.x <<" "<< A.y<< endl;
+
+    A = {1.15*m_ToMP,m_MP};
+    control_points.push_back(A);
+    myfile1 << A.x <<" "<< A.y<< endl;
+
+    A = {0.85*m_FT,m_FP};
+    control_points.push_back(A);
+    myfile1 << A.x <<" "<< A.y<< endl;
+
+    A = {0.9*m_FT,m_FP};
+    control_points.push_back(A);
+    myfile1 << A.x <<" "<< A.y<< endl;
+
+    A = {m_FT,m_FP};
+    control_points.push_back(A);
+    myfile1 << A.x <<" "<< A.y<< endl;
+
+    myfile1.close();
+
+    SetControlPoints(control_points);
+}
+
