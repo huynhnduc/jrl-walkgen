@@ -77,5 +77,54 @@ namespace PatternGeneratorJRL
 
         std::vector<double> m_knot_vector;
     };
+
+   /// ZBsplines used for Z trajectory of stair steps
+  class ZBsplines : public Bsplines
+  {
+      public:
+      /** Constructor:
+       FT: Final time
+       FP: Final position
+       ToMP : Time of Max Position
+       MP : Max Position */
+      ZBsplines(double FT, double FP, double ToMP, double MP);
+
+      /*!Compute Position at time t */
+      double ZComputePosition(double t);
+
+        /*!Compute Velocity at time t */
+      double ZComputeVelocity(double t);
+
+        /*!Compute Acceleration at time t */
+      double ZComputeAcc(double t);
+
+      /** Detructor **/
+      ~ZBsplines();
+
+      /*!  Set the parameters
+	  This method assumes implicitly a initial position
+	  initial speed and initial acceleration equal to zero.
+	  The same for final speed and final acceleration.
+	  Speed at Max Position is around zero.
+       */
+      void SetParameters(double FT, double FP, double ToMP, double MP);
+
+      /*! Create a vector of Control Points with 8 Points :
+      {0.0,0.0},
+      {m_FT*0.05,0.0},
+      {m_FT*0.1,0.0}},
+      {0.85*m_ToMP,m_MP},
+      {1.15*m_ToMP,m_MP},
+      {0.85*m_FT,m_FP},
+      {0.9*m_FT,m_FP},
+      {m_FT,m_FP}*/
+      void ZGenerateControlPoints(double FT, double FP, double ToMP, double MP);
+
+      void ZGenerateKnotVector(double FT, double ToMP);
+
+      private:
+      double m_FT, m_FP, m_ToMP, m_MP;
+  };
+
 }
 #endif /* _BSPLINES_H_*/
