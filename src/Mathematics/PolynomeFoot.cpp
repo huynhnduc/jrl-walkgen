@@ -1,6 +1,9 @@
 /*
  * Copyright 2006, 2007, 2008, 2009, 2010,
  *
+ * Andrei     Herdt
+ * Florent    Lamiraux
+ * Mathieu    Poirier
  * Olivier    Stasse
  *
  * JRL, CNRS/AIST
@@ -21,392 +24,161 @@
  *  Research carried out within the scope of the
  *  Joint Japanese-French Robotics Laboratory (JRL)
  */
-/* Polynomes object for generating foot trajectories. */
-#include <iostream>
+/** \file PolynomeFoot.h
+    \brief Polynomes object for trajectories.
+   All references are from Kajita san's book. */
+
+
+#ifndef _POLYNOME_FOOT_H_
+#define _POLYNOME_FOOT_H_
+
+#ifdef max
+#undef max
+#undef min
+#endif
+
 #include <vector>
 
-#include <Debug.hh>
-#include <Mathematics/PolynomeFoot.hh>
-#include <Mathematics/Bsplines.hh>
+#include <Mathematics/Polynome.hh>
 
-
-
-using namespace::std;
-using namespace::PatternGeneratorJRL;
-
-ZBsplines::ZBsplines(double FT, double FP, double ToMP, double MP):Bsplines(4)
+namespace PatternGeneratorJRL
 {
-    SetParameters(FT, FP, ToMP, MP);
-}
-
-ZBsplines::~ZBsplines()
-{
-
-}
-
-double ZBsplines::ZComputePosition(double t)
-{
-    if (t<m_FT)
-        return ComputeBsplines(t).y;
-    else
-        return ComputeBsplines(m_FT - t).y;
-}
-
-double ZBsplines::ZComputeVelocity(double t)
-{
-    if (m_degree >=1){
-        if (t<m_FT)
-            return DerivativeBsplines().ComputeBsplines(t).y;
-        else
-            return DerivativeBsplines().ComputeBsplines(m_FT - t).y;
-    }
-    else
+  /// Polynome used for X,Y and Theta trajectories.
+  class  Polynome3 : public Polynome
     {
-        cout << "ERROR" << endl;
-        return 0;
-    }
-}
+    public:
+      /** Constructor:
+       FT: Final time
+       FP: Final position */
+      Polynome3(double FT, double FP);
 
-double ZBsplines::ZComputeAcc(double t)
-{
-    if (m_degree >=2){
-        if (t<m_FT)
-            return DerivativeBsplines().DerivativeBsplines().ComputeBsplines(t).y;
-        else
-            return DerivativeBsplines().DerivativeBsplines().ComputeBsplines(m_FT - t).y;
-    }
-    else
+      /*!  Set the parameters
+	This method assumes implicitly a position
+	set to zero, and a speed equals to zero.
+	Final velocity is 0
+       */
+      void SetParameters(double FT, double FP);
+
+      /*! Set the parameters such that
+	the initial position, and initial speed
+	are different from zero.
+	Final velocity is 0
+       */
+      void SetParametersWithInitPosInitSpeed(double &FT,
+					     double &FP,
+					     double &InitPos,
+					     double &InitSpeed);
+
+      void GetParametersWithInitPosInitSpeed(double &FT,
+					     double &FP,
+					     double &InitPos,
+					     double &InitSpeed);
+      /// Destructor.
+      ~Polynome3();
+
+    private:
+      /*! Store final time and final position. */
+      double m_FT, m_FP;
+    };
+
+  /// Polynome used for Z trajectory.
+  class  Polynome4 : public Polynome
     {
-        cout << "ERROR" << endl;
-        return 0;
-    }
-}
+    public:
+      /** Constructor:
+       FT: Final time
+       MP: Middle position */
+      Polynome4(double FT, double MP);
 
-void  ZBsplines::SetParameters(double FT, double FP, double ToMP, double MP)
-{
-    ZGenerateKnotVector(FT,ToMP);
-    ZGenerateControlPoints(FT, FP, ToMP, MP);
-}
+      /// Set the parameters
+      // Initial velocity and position are 0
+      // Final velocity and position are 0
+      void SetParameters(double FT, double MP);
 
-void ZBsplines::ZGenerateKnotVector(double FT, double ToMP)
-{
-    std::vector<double> knot;
-    knot.clear();
-    for (int i=0;i<=m_degree;i++)
+      /*! Set the parameters such that
+	the initial position, and initial speed
+	are different from zero.
+	Final velocity and position are 0
+       */
+      void SetParametersWithInitPosInitSpeed(double FT,
+					     double MP,
+					     double InitPos,
+					     double InitSpeed);
+
+
+      /*! Get the parameters */
+      void GetParametersWithInitPosInitSpeed(double &FT,
+					     double &MP,
+					     double &InitPos,
+					     double &InitSpeed);
+
+      /// Destructor.
+      ~Polynome4();
+
+    private:
+      /*! Store final time and middle position. */
+      double m_FT, m_MP;
+
+    };
+
+  /// Polynome used for X,Y and Theta trajectories.
+  class  Polynome5 : public Polynome
     {
-        knot.push_back(0.0);
-    }
+    private:
+      double FT_, FP_, InitPos_, InitSpeed_,InitAcc_;
+    public:
+      /** Constructor:
+	  FT: Final time
+	  FP: Final position */
+      Polynome5(double FT, double FP);
 
-    knot.push_back(0.6*ToMP);
-    knot.push_back(ToMP);
-    knot.push_back(1.3*ToMP);
+      /// Set the parameters
+      void SetParameters(double FT, double FP);
 
-    for (int i =0;i<=m_degree;i++)
+      /*! Set the parameters such that
+        the initial position, and initial speed
+        are different from zero.
+       */
+      void SetParametersWithInitPosInitSpeed(double FT,
+                                             double FP,
+                                             double InitPos,
+                                             double InitSpeed);
+      /*! Set the parameters such that
+        the initial position, and initial speed
+        are different from zero.
+       */
+      void GetParametersWithInitPosInitSpeed(double &FT,
+                                             double &FP,
+                                             double &InitPos,
+                                             double &InitSpeed);
+
+      /// \brief Set parameters considering initial position, velocity, acceleration
+      void SetParameters(double FT, double FP,
+          double InitPos, double InitSpeed, double InitAcc);
+      /// Destructor.
+      ~Polynome5();
+
+    };
+
+  /// Polynome used for Z trajectory.
+  class  Polynome6 : public Polynome
     {
-        knot.push_back(FT);
-    }
+    public:
+      /// Constructor:
+      /// FT: Final time
+      /// MP: Middle position
+      Polynome6(double FT, double MP);
 
-    SetKnotVector(knot);
+      /// Set the parameters
+      // Initial acceleration, velocity and position by default 0
+      // Final acceleration, velocity and position are 0
+      void SetParameters(double FT, double MP);
+      void SetParameters(double FT, double PM,
+		  	  double InitPos, double InitSpeed, double InitAcc);
+
+      /// Destructor.
+      ~Polynome6();
+    };
+
 }
-
-void ZBsplines::ZGenerateControlPoints(double FT, double FP, double ToMP, double MP)
-{
-    m_FT = FT;
-    m_FP = FP;
-    m_ToMP = ToMP;
-    m_MP = MP;
-    std::vector<Point> control_points;
-    control_points.clear();
-    std::ofstream myfile1;
-    myfile1.open("control_point.txt");
-
-    Point A = {0.0,0.0};
-    control_points.push_back(A);
-    myfile1 << A.x <<" "<< A.y<< endl;
-
-    A = {m_FT*0.05,0.0};
-    control_points.push_back(A);
-    myfile1 << A.x <<" "<< A.y<< endl;
-
-    A = {m_FT*0.1,0.0};
-    control_points.push_back(A);
-    myfile1 << A.x <<" "<< A.y<< endl;
-
-    A = {0.85*m_ToMP,m_MP};
-    control_points.push_back(A);
-    myfile1 << A.x <<" "<< A.y<< endl;
-
-    A = {1.15*m_ToMP,m_MP};
-    control_points.push_back(A);
-    myfile1 << A.x <<" "<< A.y<< endl;
-
-    A = {0.85*m_FT,m_FP};
-    control_points.push_back(A);
-    myfile1 << A.x <<" "<< A.y<< endl;
-
-    A = {0.9*m_FT,m_FP};
-    control_points.push_back(A);
-    myfile1 << A.x <<" "<< A.y<< endl;
-
-    A = {m_FT,m_FP};
-    control_points.push_back(A);
-    myfile1 << A.x <<" "<< A.y<< endl;
-
-    myfile1.close();
-
-    SetControlPoints(control_points);
-}
-
-Polynome3::Polynome3(double FT, double FP) :Polynome(3)
-{
-  SetParameters(FT,FP);
-}
-
-void Polynome3::SetParameters(double FT, double FP)
-{
-  m_FT = FT;
-  m_FP = FP;
-  double tmp;
-  m_Coefficients[0] = 0.0;
-  m_Coefficients[1] = 0.0;
-  tmp = FT*FT;
-  if(FP == 0.0 || FT == 0.0)
-  {
-    m_Coefficients[2] = 0.0;
-    m_Coefficients[3] = 0.0;
-  }else{
-    m_Coefficients[2] = 3.0*FP/tmp;
-    m_Coefficients[3] = -2.0*FP/(tmp*FT);
-  }
-}
-
-void Polynome3::SetParametersWithInitPosInitSpeed(double &FT,
-						  double &FP,
-						  double &InitPos,
-						  double &InitSpeed)
-{
-  m_FT = FT;
-  m_FP = FP;
-
-  double tmp;
-  m_Coefficients[0] = InitPos;
-  m_Coefficients[1] = InitSpeed;
-  tmp = FT*FT;
-  if(FT == 0.0)
-  {
-    m_Coefficients[2] = 0.0;
-    m_Coefficients[3] = 0.0;
-  }else{
-    m_Coefficients[2] = (3*FP - 3*InitPos - 2*InitSpeed*FT)/tmp;
-    m_Coefficients[3] = (InitSpeed*FT+ 2*InitPos - 2*FP)/(tmp*FT);
-  }
-}
-
-void Polynome3::GetParametersWithInitPosInitSpeed(double &FT,
-						  double &FP,
-						  double &InitPos,
-						  double &InitSpeed)
-{
-  InitPos= m_Coefficients[0];
-  InitSpeed= m_Coefficients[1];
-  FT = m_FT;
-  FP = m_FP;
-}
-
-Polynome3::~Polynome3()
-{}
-
-Polynome4::Polynome4(double FT, double FP) :Polynome(4)
-{
-  SetParameters(FT,FP);
-}
-
-void Polynome4::SetParameters(double FT, double MP)
-{
-  m_FT = FT;
-  m_MP = MP;
-  double tmp;
-  m_Coefficients[0] = 0.0;
-  m_Coefficients[1] = 0.0;
-  tmp = FT*FT;
-  if(MP==0.0 || tmp==0.0)
-  {
-    m_Coefficients[2] = 0.0;
-    m_Coefficients[3] = 0.0;
-    m_Coefficients[4] = 0.0;
-  }else{
-    m_Coefficients[2] = 16.0*MP/tmp;
-    tmp=tmp*FT;
-    m_Coefficients[3] = -32.0*MP/tmp;
-    tmp=tmp*FT;
-    m_Coefficients[4] = 16.0*MP/tmp;
-  }
-}
-
-void Polynome4::SetParametersWithInitPosInitSpeed(double FT,
-						  double MP,
-						  double InitPos,
-						  double InitSpeed)
-{
-  m_FT = FT;
-  m_MP = MP;
-
-  double tmp;
-  m_Coefficients[0] = InitPos;
-  m_Coefficients[1] = InitSpeed;
-  tmp = FT*FT;
-  if(tmp==0.0)
-  {
-    m_Coefficients[2] = 0.0;
-    m_Coefficients[3] = 0.0;
-    m_Coefficients[4] = 0.0;
-  }else{
-    m_Coefficients[2] = (-4.0*InitSpeed*FT - 11.0*InitPos + 16.0*MP)/tmp;
-    tmp=tmp*FT;
-    m_Coefficients[3] = ( 5.0*InitSpeed*FT + 18.0*InitPos - 32.0*MP)/tmp;
-    tmp=tmp*FT;
-    m_Coefficients[4] = (-2.0*InitSpeed*FT - 8.0 *InitPos + 16.0*MP)/tmp;
-  }
-}
-void Polynome4::GetParametersWithInitPosInitSpeed(double &FT,
-						  double &MP,
-						  double &InitPos,
-						  double &InitSpeed)
-{
-  FT = m_FT;
-  MP = m_MP;
-  InitPos = m_Coefficients[0];
-  InitSpeed = m_Coefficients[1];
-}
-Polynome4::~Polynome4()
-{}
-Polynome5::Polynome5(double FT, double FP)
-  :Polynome(5),
-   FT_(FT),
-   FP_(FP),
-   InitPos_(0.0),
-   InitSpeed_(0.0),
-   InitAcc_(0.0)
-
-{
-  SetParameters(FT,FP);
-}
-
-Polynome5::~Polynome5()
-{}
-
-void Polynome5::SetParameters(double FT, double FP)
-{
-  double tmp;
-  FT_ = FT; FP_=FP; InitPos_ = 0.0;
-  InitSpeed_ = 0; InitAcc_ = 0.0;
-  m_Coefficients[0] = 0.0;
-  m_Coefficients[1] = 0.0;
-  m_Coefficients[2] = 0.0;
-  tmp = FT*FT*FT;
-  if(FP==0.0 || tmp==0.0)
-  {
-    m_Coefficients[3] = 0.0;
-    m_Coefficients[4] = 0.0;
-    m_Coefficients[5] = 0.0;
-  }else{
-    m_Coefficients[3] = 10*FP/tmp;
-    tmp *=FT;
-    m_Coefficients[4] = -15*FP/tmp;
-    tmp*=FT;
-    m_Coefficients[5] = 6*FP/tmp;
-  }
-}
-
-void Polynome5::SetParametersWithInitPosInitSpeed(double FT,
-                                                  double FP,
-                                                  double InitPos,
-                                                  double InitSpeed)
-{
-  double tmp;
-  m_Coefficients[0] = InitPos_ = InitPos;
-  m_Coefficients[1] = InitSpeed_ = InitSpeed;
-  InitPos_ = InitPos; InitSpeed = InitSpeed_; InitAcc_ = 0.0;
-  m_Coefficients[2] = 0.0/2.0;
-  tmp = FT*FT*FT;
-  m_Coefficients[3] = (-3.0/2.0*0.0*FT*FT-6.0*InitSpeed*FT - 10.0*InitPos + 10.0*FP)/tmp;
-  tmp=tmp*FT;
-  m_Coefficients[4] = ( 3.0/2.0*0.0*FT*FT + 8.0*InitSpeed*FT + 15.0*InitPos - 15.0*FP)/tmp;
-  tmp=tmp*FT;
-  m_Coefficients[5] = ( -1.0/2.0*0.0*FT*FT - 3.0*InitSpeed*FT - 6.0*InitPos + 6.0*FP)/tmp;
-}
-
-void Polynome5::GetParametersWithInitPosInitSpeed(double &FT,
-                                                  double &FP,
-                                                  double &InitPos,
-                                                  double &InitSpeed)
-{
-  InitPos = m_Coefficients[0] ;
-  InitSpeed = m_Coefficients[1];
-  FT = FT_;
-  FP = FP_;
-}
-
-void Polynome5::SetParameters(double FT, double FP,
-    double InitPos, double InitSpeed, double InitAcc)
-{
-  double tmp;
-  m_Coefficients[0] = InitPos_ = InitPos;
-  m_Coefficients[1] = InitSpeed_ = InitSpeed;
-  m_Coefficients[2] = InitAcc/2.0; InitAcc_ = InitAcc;
-  FT_ = FT; FP_ = FP;
-  tmp = FT*FT*FT;
-  m_Coefficients[3] = (-3.0/2.0*InitAcc*FT*FT-6.0*InitSpeed*FT - 10.0*InitPos + 10.0*FP)/tmp;
-  tmp=tmp*FT;
-  m_Coefficients[4] = ( 3.0/2.0*InitAcc*FT*FT + 8.0*InitSpeed*FT + 15.0*InitPos - 15.0*FP)/tmp;
-  tmp=tmp*FT;
-  m_Coefficients[5] = ( -1.0/2.0*InitAcc*FT*FT - 3.0*InitSpeed*FT - 6.0*InitPos + 6.0*FP)/tmp;
-}
-
-Polynome6::Polynome6(double FT, double MP) :Polynome(6)
-{
-  SetParameters(FT,MP);
-}
-
-void Polynome6::SetParameters(double FT, double MP)
-{
-  double tmp;
-  m_Coefficients[0] = 0.0;
-  m_Coefficients[1] = 0.0;
-  m_Coefficients[2] = 0.0;
-  tmp = FT*FT*FT;
-  if(MP==0.0 || tmp==0.0)
-  {
-    m_Coefficients[3] = 0.0;
-    m_Coefficients[4] = 0.0;
-    m_Coefficients[5] = 0.0;
-    m_Coefficients[6] = 0.0;
-  }else{
-    m_Coefficients[3] = 64*MP/tmp;
-    tmp *=FT;
-    m_Coefficients[4] = -192*MP/tmp;
-    tmp *=FT;
-    m_Coefficients[5] = 192*MP/tmp;
-    tmp *=FT;
-    m_Coefficients[6] = -64*MP/tmp;
-  }
-}
-
-
-void Polynome6::SetParameters(
-		double FT, double PM,
-		double InitPos, double InitSpeed, double InitAcc)
-{
-  m_Coefficients[0] = InitPos;
-  m_Coefficients[1] = InitSpeed;
-  m_Coefficients[2] = 0.5*InitAcc;
-  m_Coefficients[3] = -0.5*(5*FT*FT*InitAcc + 32*InitSpeed*FT + 84*InitPos - 128*PM)/(FT*FT*FT);
-  m_Coefficients[4] =  0.5*(76*InitSpeed*FT + 222*InitPos - 384*PM + 9*FT*FT*InitAcc)/(FT*FT*FT*FT);
-  m_Coefficients[5] = -0.5*(204*InitPos + 66*InitSpeed*FT - 384*PM + 7*FT*FT*InitAcc)/(FT*FT*FT*FT*FT);
-  m_Coefficients[6] =      (-64*PM+32*InitPos + 10*InitSpeed*FT + FT*FT*InitAcc)/(FT*FT*FT*FT*FT*FT);
-}
-
-Polynome6::~Polynome6()
-{
-}
-
+#endif /* _POLYNOME_FOOT_H_ */
