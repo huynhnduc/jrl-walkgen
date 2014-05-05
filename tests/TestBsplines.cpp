@@ -64,6 +64,12 @@ int main()
     }
     myfile.close();
     delete Z;
+    
+    //draw a foot trajectory with the data given from bsplines	
+    myfile.open("tracetestbsplines.gnu");
+    myfile << "plot 'control_point.txt' with points, 'testbsplines.txt' using 1:2 with lines title 'Pos'"<< endl;
+    myfile << "plot 'testbsplines.txt' using 1:2 with linespoint title 'Pos', 'testbsplines.txt' using 1:3 with linespoint title 'Speed','testbsplines.txt' using 1:4 with linespoint title 'Acc'"<< endl;
+    myfile.close();
     return 0;
 }
 
