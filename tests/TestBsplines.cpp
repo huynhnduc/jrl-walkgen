@@ -24,40 +24,46 @@
  */
 /*! \file TestBsplines.cpp
   \brief This Example shows you how to use Bsplines to create a foot trajectory on Z . */
-
+#include <stdlib.h>
 #include <iostream>
 #include <fstream>
-#include "Mathematics/PolynomeFoot.hh"
+#include "Mathematics/Bsplines.hh"
 
 using namespace std;
 
 int main()
 {
+    PatternGeneratorJRL::ZBsplines *Z;
     double t=0.0;
     int m_degree;
     int i , j;
     ofstream myfile;
-    myfile.open("test.txt");
+    myfile.open("testbsplines.txt");
 
+    //Create the parameters of foot trajectory on Z
     double m_FT = 0.7;
     double m_FP = 0.2;
     double m_MP = 0.3;
     double m_ToMP = m_FT/3.0;
 
-    PatternGeneratorJRL::ZBsplines Z(m_FT, m_FP, m_ToMP, m_MP);
+    //Create an object for test
+    Z = new PatternGeneratorJRL::ZBsplines(m_FT, m_FP, m_ToMP, m_MP);
 
-    Z.PrintDegree();
-    Z.PrintKnotVector();
-    Z.PrintControlPoints();
+    Z->PrintDegree();
+    Z->PrintKnotVector();
+    Z->PrintControlPoints();
 
     for (int k=1; k<1000;k++)
     {
 
-        t=double(k)*Z.GetKnotVector().back()/1000.0;
+        t=double(k)*Z->GetKnotVector().back()/1000.0;
         cout << k << endl;
-        myfile << t << " " << Z.ZComputePosition(t)<<" "<< Z.ComputeBsplines(t).x <<" "<< Z.ComputeBsplines(t).y <<" "<< Z.ZComputeVelocity(t)<< " "<< Z.ZComputeAcc(t)<< endl;
-        cout <<  t  << " " << Z.ZComputePosition(t)<<" "<< Z.ZComputeVelocity(t)<< " "<< Z.ZComputeAcc(t)<< endl;
+        myfile << t << " " << Z->ZComputePosition(t) << " " << Z->ZComputeVelocity(t)<< " " << Z->ZComputeAcc(t)<< endl;
+	// time - Position - Velocity - Acceleration
+        cout <<  t  << " " << Z->ZComputePosition(t)<<" "<< Z->ZComputeVelocity(t)<< " "<< Z->ZComputeAcc(t)<< endl;
     }
     myfile.close();
+    delete Z;
     return 0;
 }
+
